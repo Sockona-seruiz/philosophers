@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 # define EAT 1
 # define SLEEP 2
@@ -21,6 +22,7 @@ typedef struct	s_struct
 	int				ttsleep;
 	int				total_eat;
 	int				philo_nb;
+	uint64_t		start_time;
 	pthread_mutex_t	*speak;
 	pthread_mutex_t	*forks;
 }				t_struct;
@@ -80,7 +82,7 @@ void	*loop(void	*arg)
 int	pick_fork(t_philo *philo, int i)
 {
 	pthread_mutex_lock(&(philo->s->forks[i]));
-	if (i == philo->s->philo_nb)
+	if (i + 1 == philo->s->philo_nb)
 		pthread_mutex_lock(&(philo->s->forks[0]));
 	else
 		pthread_mutex_lock(&(philo->s->forks[i + 1]));
@@ -89,32 +91,11 @@ int	pick_fork(t_philo *philo, int i)
 	usleep(philo->s->tteat);
 	philo->state = SLEEP;
 	pthread_mutex_unlock(&(philo->s->forks[i]));
-	if (i == philo->s->philo_nb)
+	if (i + 1 == philo->s->philo_nb)
 		pthread_mutex_unlock(&(philo->s->forks[0]));
 	else
 		pthread_mutex_unlock(&(philo->s->forks[i + 1]));
 	return (1);
-}
-
-void	try_to_eat_old(t_philo *philo)
-{
-	if (philo->id == 1)
-	{
-		pick_fork(philo, 0);
-	}
-	else if (philo->id == 2)
-	{
-		pick_fork(philo, 1);
-	}
-	else if (philo->id == 3)
-	{
-		pick_fork(philo, 2);
-	}
-	else if (philo->id == 4)
-	{
-		pick_fork(philo, 3);
-	}
-	return ;
 }
 
 void	*test_loop(void	*arg)
@@ -127,7 +108,9 @@ void	*test_loop(void	*arg)
 	{
 		//printf("nbr : %d 000015433\n", philo->id);
 		if (philo->state == THINK)
-			try_to_eat_old(philo);
+		{
+			pick_fork(philo, philo->id - 1);
+		}
 		if (philo->state == SLEEP)
 		{
 			printf("philo %d is sleeping\n", philo->id);
@@ -151,11 +134,20 @@ void	*test_loop(void	*arg)
 
 //comment identifier un philosopher en foction de son thread?
 
+uint64_t	get_time(void)
+{
+	static struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * (uint64_t)1000) + (tv.tv_usec / 1000));
+}
+
 int	main(int argc, char **argv)
 {
 	t_struct	*s;
 	t_philo		*philos;
-	int		i;
+	int			i;
+	uint64_t	time;
 
 	i = 0;
 	s = malloc(sizeof(t_struct));
@@ -176,7 +168,8 @@ int	main(int argc, char **argv)
 	}
 
 	i = 0;
-
+	s->start_time =  get_time();
+	printf("time = %llu\n", time);
 	while (i < s->philo_nb)
 	{
 		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
