@@ -21,6 +21,7 @@ typedef struct	s_struct
 	int				ttsleep;
 	int				total_eat;
 	int				philo_nb;
+	pthread_mutex_t	*speak;
 	pthread_mutex_t	*forks;
 }				t_struct;
 
@@ -76,6 +77,53 @@ void	*loop(void	*arg)
 	}
 }
 
+int	pick_fork(t_philo *philo, int i)
+{
+	pthread_mutex_lock(&(philo->s->forks[i]));
+	if (i == philo->s->philo_nb)
+		pthread_mutex_lock(&(philo->s->forks[0]));
+	else
+		pthread_mutex_lock(&(philo->s->forks[i + 1]));
+	printf("philo %d is eating\n", i + 1);
+	sleep(1);
+	pthread_mutex_unlock(&(philo->s->forks[i]));
+	if (i == philo->s->philo_nb)
+		pthread_mutex_unlock(&(philo->s->forks[0]));
+	else
+		pthread_mutex_unlock(&(philo->s->forks[i + 1]));
+	return (1);
+}
+
+void	try_to_eat_old(t_philo *philo)
+{
+	if (philo->id == 1)
+	{
+		pick_fork(philo, 0);
+		pick_fork(philo, 1);
+	}
+	else if (philo->id == 2)
+	{
+		pick_fork(philo, 1);
+		pick_fork(philo, 2);
+	}
+	else if (philo->id == 3)
+	{
+		pick_fork(philo, 2);
+		pick_fork(philo, 3);
+	}
+	else if (philo->id == 4)
+	{
+		pick_fork(philo, 3);
+		pick_fork(philo, 0);
+	}
+	return ;
+}
+
+void	try_to_eat(t_philo *philo)
+{
+
+}
+
 void	*test_loop(void	*arg)
 {
 	t_philo	*philo;
@@ -84,7 +132,9 @@ void	*test_loop(void	*arg)
 	//pthread_mutex_lock(&(philo->s->forks[0]));
 	while (1)
 	{
-		printf("nbr : %d 000015433\n", philo->id);
+		//printf("nbr : %d 000015433\n", philo->id);
+		if (philo->state == THINK)
+			try_to_eat_old(philo);
 	}
 	//pthread_mutex_unlock(&(philo->s->forks[0]));
 	/*
@@ -118,6 +168,7 @@ int	main(int argc, char **argv)
 	{
 		philos[i].s = s;
 		philos[i].id = i + 1;
+		philos[i].state = THINK;
 		pthread_mutex_init(&(s->forks[i]), NULL);
 		i++;
 	}
@@ -127,6 +178,7 @@ int	main(int argc, char **argv)
 	while (i < s->philo_nb)
 	{
 		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
+		usleep(10);
 		i++;
 	}
 	i = 0;
