@@ -84,8 +84,10 @@ int	pick_fork(t_philo *philo, int i)
 		pthread_mutex_lock(&(philo->s->forks[0]));
 	else
 		pthread_mutex_lock(&(philo->s->forks[i + 1]));
+	philo->state = EAT;
 	printf("philo %d is eating\n", i + 1);
-	sleep(1);
+	usleep(philo->s->tteat);
+	philo->state = SLEEP;
 	pthread_mutex_unlock(&(philo->s->forks[i]));
 	if (i == philo->s->philo_nb)
 		pthread_mutex_unlock(&(philo->s->forks[0]));
@@ -99,29 +101,20 @@ void	try_to_eat_old(t_philo *philo)
 	if (philo->id == 1)
 	{
 		pick_fork(philo, 0);
-		pick_fork(philo, 1);
 	}
 	else if (philo->id == 2)
 	{
 		pick_fork(philo, 1);
-		pick_fork(philo, 2);
 	}
 	else if (philo->id == 3)
 	{
 		pick_fork(philo, 2);
-		pick_fork(philo, 3);
 	}
 	else if (philo->id == 4)
 	{
 		pick_fork(philo, 3);
-		pick_fork(philo, 0);
 	}
 	return ;
-}
-
-void	try_to_eat(t_philo *philo)
-{
-
 }
 
 void	*test_loop(void	*arg)
@@ -135,6 +128,12 @@ void	*test_loop(void	*arg)
 		//printf("nbr : %d 000015433\n", philo->id);
 		if (philo->state == THINK)
 			try_to_eat_old(philo);
+		if (philo->state == SLEEP)
+		{
+			printf("philo %d is sleeping\n", philo->id);
+			usleep(philo->s->ttsleep);
+			philo->state = THINK;
+		}
 	}
 	//pthread_mutex_unlock(&(philo->s->forks[0]));
 	/*
@@ -161,6 +160,9 @@ int	main(int argc, char **argv)
 	i = 0;
 	s = malloc(sizeof(t_struct));
 	s->philo_nb = ft_atoi(argv[1]);
+	s->ttdie = ft_atoi(argv[2]);
+	s->tteat = ft_atoi(argv[3]);
+	s->ttsleep = ft_atoi(argv[4]);
 	printf("there is %d philosophers\n", s->philo_nb);
 	s->forks = malloc(sizeof(pthread_mutex_t) * (s->philo_nb));
 	philos = malloc(sizeof(t_philo) * (s->philo_nb));
