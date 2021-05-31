@@ -28,7 +28,8 @@ typedef struct	s_philo
 {
 	int				state;
 	int				eat_count;
-	pthread_t		id;
+	int				id;
+	pthread_t		th_id;
 	t_struct		*s;
 }				t_philo;
 
@@ -78,16 +79,12 @@ void	*loop(void	*arg)
 void	*test_loop(void	*arg)
 {
 	t_philo	*philo;
-	static	int nbr = 0;
-
 
 	philo = arg;
-	nbr++;
-	int i = nbr;
 	//pthread_mutex_lock(&(philo->s->forks[0]));
 	while (1)
 	{
-		printf("nbr : %d 000015433\n", i);
+		printf("nbr : %d 000015433\n", philo->id);
 	}
 	//pthread_mutex_unlock(&(philo->s->forks[0]));
 	/*
@@ -120,6 +117,7 @@ int	main(int argc, char **argv)
 	while (i < s->philo_nb)
 	{
 		philos[i].s = s;
+		philos[i].id = i + 1;
 		pthread_mutex_init(&(s->forks[i]), NULL);
 		i++;
 	}
@@ -128,13 +126,13 @@ int	main(int argc, char **argv)
 
 	while (i < s->philo_nb)
 	{
-		pthread_create(&(philos[i].id), NULL, test_loop, &philos[i]);
+		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
 		i++;
 	}
 	i = 0;
 	while (i < s->philo_nb)
 	{
-		pthread_join(philos[i].id, 0);
+		pthread_join(philos[i].th_id, 0);
 		i++;
 	}
 }
