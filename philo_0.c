@@ -107,7 +107,7 @@ int	pick_fork(t_philo *philo, int i)
 	else
 		pthread_mutex_lock(&(philo->s->forks[i + 1]));
 	philo->end_think_time = get_start_time();
-	printf("think delay = %llu\n", philo->end_think_time - philo->begin_think_time);
+	printf("philo %d think delay = %llu\n", philo->id, philo->end_think_time - philo->begin_think_time);
 	if ((philo->end_think_time - philo->begin_think_time) > philo->s->ttdie)
 		return (-1);
 	philo->state = EAT;
@@ -128,18 +128,19 @@ void	*test_loop(void	*arg)
 	t_philo		*philo;
 
 	philo = arg;
+	philo->begin_think_time = get_start_time();
 	//pthread_mutex_lock(&(philo->s->forks[0]));
 	while (philo->state != DEAD)
 	{
 		//printf("nbr : %d 000015433\n", philo->id);
 		if (philo->state == THINK)
 		{
-			philo->begin_think_time = get_start_time();
 			if (pick_fork(philo, philo->id - 1) == -1)
 			{
 				printf("philo %d is DEAD =========================================================\n", philo->id);
 				philo->state = DEAD;
 			}
+			philo->begin_think_time = get_start_time();
 		}
 		if (philo->state == SLEEP)
 		{
