@@ -32,6 +32,9 @@ typedef struct	s_philo
 	int				state;
 	int				eat_count;
 	int				id;
+	uint64_t		last_action_time;
+	uint64_t		begin_think_time;
+	uint64_t		end_think_time;
 	pthread_t		th_id;
 	t_struct		*s;
 }				t_philo;
@@ -61,22 +64,39 @@ int	ft_atoi(const char *str)
 	return (result * sign);
 }
 
-void	*loop(void	*arg)
+uint64_t	get_start_time(void)
 {
-	t_struct	*s;
-	int			i;
+	static struct timeval	tv;
 
-	i = 0;
-	s = arg;
-	while (42)
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000000 + tv.tv_usec);
+}
+
+uint64_t	get_time(uint64_t start_time)
+{
+	static struct	timeval	tv;
+	uint64_t		result;
+
+	gettimeofday(&tv, NULL);
+	result = tv.tv_sec * 1000000 + tv.tv_usec - start_time;
+	return (result);
+}
+
+
+void	custom_usleep(t_philo *philo, int delay)
+{
+	uint64_t	i;
+	uint64_t	j;
+
+	i = get_start_time();
+	j = 0;
+	while (j < delay)
 	{
-		while (i < s->philo_nb)
-		{
-			//change_state(s);
-			i--;
-		}
-		i = 0;
+		usleep(10);
+		j = get_start_time();
+		j = j - i;
 	}
+	//printf("time slept = %llu\n", j);
 }
 
 int	pick_fork(t_philo *philo, int i)
@@ -86,9 +106,14 @@ int	pick_fork(t_philo *philo, int i)
 		pthread_mutex_lock(&(philo->s->forks[0]));
 	else
 		pthread_mutex_lock(&(philo->s->forks[i + 1]));
+	philo->end_think_time = get_start_time();
+	printf("think delay = %llu\n", philo->end_think_time - philo->begin_think_time);
+	if ((philo->end_think_time - philo->begin_think_time) > philo->s->ttdie)
+		return (-1);
 	philo->state = EAT;
 	printf("philo %d is eating\n", i + 1);
-	usleep(philo->s->tteat);
+	custom_usleep(philo, philo->s->tteat);
+	//usleep(philo->s->tteat);
 	philo->state = SLEEP;
 	pthread_mutex_unlock(&(philo->s->forks[i]));
 	if (i + 1 == philo->s->philo_nb)
@@ -100,21 +125,26 @@ int	pick_fork(t_philo *philo, int i)
 
 void	*test_loop(void	*arg)
 {
-	t_philo	*philo;
+	t_philo		*philo;
 
 	philo = arg;
 	//pthread_mutex_lock(&(philo->s->forks[0]));
-	while (1)
+	while (philo->state != DEAD)
 	{
 		//printf("nbr : %d 000015433\n", philo->id);
 		if (philo->state == THINK)
 		{
-			pick_fork(philo, philo->id - 1);
+			philo->begin_think_time = get_start_time();
+			if (pick_fork(philo, philo->id - 1) == -1)
+			{
+				printf("philo %d is DEAD =========================================================\n", philo->id);
+				philo->state = DEAD;
+			}
 		}
 		if (philo->state == SLEEP)
 		{
 			printf("philo %d is sleeping\n", philo->id);
-			usleep(philo->s->ttsleep);
+			custom_usleep(philo, philo->s->ttsleep);
 			philo->state = THINK;
 		}
 	}
@@ -133,14 +163,6 @@ void	*test_loop(void	*arg)
 }
 
 //comment identifier un philosopher en foction de son thread?
-
-uint64_t	get_time(void)
-{
-	static struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * (uint64_t)1000) + (tv.tv_usec / 1000));
-}
 
 int	main(int argc, char **argv)
 {
@@ -168,10 +190,11 @@ int	main(int argc, char **argv)
 	}
 
 	i = 0;
-	s->start_time =  get_time();
+	s->start_time =  get_start_time();
 	printf("time = %llu\n", time);
 	while (i < s->philo_nb)
 	{
+		philos[i].last_action_time = get_start_time();
 		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
 		usleep(10);
 		i++;
