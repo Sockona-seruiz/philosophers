@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+# define FORK 0
 # define EAT 1
 # define SLEEP 2
 # define THINK 3
@@ -23,6 +24,7 @@ typedef struct	s_struct
 	int				total_eat;
 	int				philo_nb;
 	uint64_t		start_time;
+	uint64_t		actual_time;
 	pthread_mutex_t	*speak;
 	pthread_mutex_t	*forks;
 }				t_struct;
@@ -86,22 +88,42 @@ void	custom_usleep(t_philo *philo, int delay)
 		j = get_time();
 		j = j - i;
 	}
-	printf("time slept = %llu\n", j);
+}
+
+void	speak(t_philo *philo, int state)
+{
+	pthread_mutex_lock(philo->s->speak);
+	printf("%llu %d ", get_time() - philo->s->start_time, philo->id);
+	if (state == FORK)
+		printf("has taken a fork\n");
+	else if (state == EAT)
+		printf("is eating\n");
+	else if (state == SLEEP)
+		printf(" is sleeping\n");
+	else if (state == THINK)
+		printf("is thinking\n");
+	else
+		printf("died\n");
+	pthread_mutex_unlock(philo->s->speak);
 }
 
 int	pick_fork(t_philo *philo, int i)
 {
 	pthread_mutex_lock(&(philo->s->forks[i]));
+	speak(philo, FORK);
 	if (i + 1 == philo->s->philo_nb)
 		pthread_mutex_lock(&(philo->s->forks[0]));
 	else
 		pthread_mutex_lock(&(philo->s->forks[i + 1]));
+	speak(philo, FORK);
 	philo->end_think_time = get_time();
-	printf("philo %d think delay = %llu\n", philo->id, philo->end_think_time - philo->begin_think_time);
+	//printf("philo %d think delay = %llu\n", philo->id, philo->end_think_time - philo->begin_think_time);
 	if ((philo->end_think_time - philo->begin_think_time) > philo->s->ttdie)
 		return (-1);
+	philo->eat_count++;
 	philo->state = EAT;
-	printf("philo %d is eating\n", i + 1);
+	speak(philo, EAT);
+	//printf("philo %d is eating\n", i + 1);
 	philo->begin_think_time = get_time();
 	custom_usleep(philo, philo->s->tteat);
 	philo->state = SLEEP;
@@ -125,13 +147,15 @@ void	*test_loop(void	*arg)
 		{
 			if (pick_fork(philo, philo->id - 1) == -1)
 			{
-				printf("philo %d is DEAD =========================================================\n", philo->id);
+				//printf("philo %d is DEAD =========================================================\n", philo->id);
 				philo->state = DEAD;
+				speak(philo, DEAD);
 			}
 		}
 		if (philo->state == SLEEP)
 		{
-			printf("philo %d is sleeping\n", philo->id);
+			speak(philo, SLEEP);
+			//printf("philo %d is sleeping\n", philo->id);
 			custom_usleep(philo, philo->s->ttsleep);
 			philo->state = THINK;
 		}
@@ -152,14 +176,19 @@ int	main(int argc, char **argv)
 	s->ttdie = ft_atoi(argv[2]);
 	s->tteat = ft_atoi(argv[3]);
 	s->ttsleep = ft_atoi(argv[4]);
+	if (argv[5])
+		s->total_eat = ft_atoi(argv[5]);
 	printf("there is %d philosophers\n", s->philo_nb);
 	s->forks = malloc(sizeof(pthread_mutex_t) * (s->philo_nb));
+	s->speak = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(s->speak, NULL);
 	philos = malloc(sizeof(t_philo) * (s->philo_nb));
 	while (i < s->philo_nb)
 	{
 		philos[i].s = s;
 		philos[i].id = i + 1;
 		philos[i].state = THINK;
+		philos[i].eat_count = 0;
 		pthread_mutex_init(&(s->forks[i]), NULL);
 		i++;
 	}
@@ -171,7 +200,7 @@ int	main(int argc, char **argv)
 	{
 		philos[i].last_action_time = get_time();
 		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
-		usleep(50);
+		usleep(10);
 		i++;
 	}
 	i = 0;
