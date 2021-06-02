@@ -123,8 +123,12 @@ int	pick_fork(t_philo *philo, int i)
 		second_fork = i + 1;
 	while (philo->s->forks_status[second_fork] == LOCK)
 	{
+		philo->end_think_time = get_time();
 		if ((philo->end_think_time - philo->begin_think_time) > philo->s->ttdie)
-					speak(philo, DEAD);
+		{
+			speak(philo, DEAD);
+			exit (1);
+		}
 	}
 	pthread_mutex_lock(&(philo->s->forks[second_fork]));
 	philo->s->forks_status[second_fork] = LOCK;
@@ -197,7 +201,6 @@ int	main(int argc, char **argv)
 	s->ttsleep = ft_atoi(argv[4]);
 	if (argv[5])
 		s->total_eat = ft_atoi(argv[5]);
-	printf("there is %d philosophers\n", s->philo_nb);
 	s->forks_status = malloc(sizeof(int) * (s->philo_nb));
 	s->forks = malloc(sizeof(pthread_mutex_t) * (s->philo_nb));
 	s->speak = malloc(sizeof(pthread_mutex_t));
@@ -216,7 +219,6 @@ int	main(int argc, char **argv)
 
 	i = 0;
 	s->start_time =  get_time();
-	printf("time = %llu\n", time);
 	while (i < s->philo_nb)
 	{
 		philos[i].last_action_time = get_time();
