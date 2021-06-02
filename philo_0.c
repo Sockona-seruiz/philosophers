@@ -1,48 +1,4 @@
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/time.h>
-
-# define FORK 0
-# define EAT 1
-# define SLEEP 2
-# define THINK 3
-# define DEAD 4
-# define FREE 5
-# define LOCK 6
-
-//Eat -> Sleep -> Think
-//Pour manger un philo doit passer dans la fonction pour lock ses deux fourchettes
-//Si celle-ci est déjà lock => un autre utilise ces même fourchettes pour manger
-//il attend puis les lock à son tours dés que possible
-
-typedef struct	s_struct
-{
-	int				tteat;
-	int				ttdie;
-	int				ttsleep;
-	int				total_eat;
-	int				philo_nb;
-	uint64_t		start_time;
-	uint64_t		actual_time;
-	pthread_mutex_t	*speak;
-	pthread_mutex_t	*forks;
-	int				*forks_status;
-}				t_struct;
-
-typedef struct	s_philo
-{
-	int				state;
-	int				eat_count;
-	int				id;
-	uint64_t		last_action_time;
-	uint64_t		begin_think_time;
-	uint64_t		end_think_time;
-	pthread_t		th_id;
-	t_struct		*s;
-}				t_philo;
+#include "philo_0.h"
 
 int	ft_atoi(const char *str)
 {
@@ -93,6 +49,20 @@ void	custom_usleep(t_philo *philo, int delay)
 	}
 }
 
+void	ft_exit(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo->s->philo_nb)
+	{
+		pthread_mutex_destroy(&(philo->s->forks[i]));
+		i++;
+	}
+	wrdestroy();
+	exit (0);
+}
+
 void	speak(t_philo *philo, int state)
 {
 	pthread_mutex_lock(philo->s->speak);
@@ -106,8 +76,27 @@ void	speak(t_philo *philo, int state)
 	else if (state == THINK)
 		printf("is thinking\n");
 	else
+	{
 		printf("died\n");
+		ft_exit(philo);
+	}
 	pthread_mutex_unlock(philo->s->speak);
+}
+
+int	check_eat_count(t_philo *philo)
+{
+	int	i;
+	int	ret;
+
+	i = 0;
+	ret = 1;
+	while (i < philo->s->philo_nb)
+	{
+		if (&(philo->s->eat_count[i]) < philo->s->eat_count)
+			ret = 0;
+		i++;
+	}
+	return (ret);
 }
 
 int	pick_fork(t_philo *philo, int i)
@@ -134,11 +123,14 @@ int	pick_fork(t_philo *philo, int i)
 	philo->s->forks_status[second_fork] = LOCK;
 	speak(philo, FORK);
 	philo->end_think_time = get_time();
-	//printf("philo %d think delay = %llu\n", philo->id, philo->end_think_time - philo->begin_think_time);
-	philo->eat_count++;
-	philo->state = EAT;
+
+	philo->s->eat_count[i]++;
+	/*
+	if (check_eat_count(philo) == 1)
+		ft_exit(philo);
+	*/
 	speak(philo, EAT);
-	//printf("philo %d is eating\n", i + 1);
+
 	philo->begin_think_time = get_time();
 	custom_usleep(philo, philo->s->tteat);
 	philo->state = SLEEP;
@@ -163,26 +155,39 @@ void	*test_loop(void	*arg)
 			{
 				philo->end_think_time = get_time();
 				if ((philo->end_think_time - philo->begin_think_time) > philo->s->ttdie)
-				{
-					philo->state = DEAD;
 					speak(philo, DEAD);
-					exit(1);
-				}
 			}
 			if (pick_fork(philo, philo->id - 1) == -1)
-			{
-				philo->state = DEAD;
 				speak(philo, DEAD);
-			}
 		}
 		if (philo->state == SLEEP)
 		{
 			speak(philo, SLEEP);
-			//printf("philo %d is sleeping\n", philo->id);
 			custom_usleep(philo, philo->s->ttsleep);
 			philo->state = THINK;
 		}
 	}
+	return (0);
+}
+
+int	ft_error(char *message)
+{
+	printf("Error : %s\n", message);
+	return (1);
+}
+
+int	set_shared_var(int argc, char **argv, t_struct *s)
+{
+	if (argc != 5 && argc != 6)
+		return (ft_error("Invalid number of arguments"));
+	s->philo_nb = ft_atoi(argv[1]);
+	s->ttdie = ft_atoi(argv[2]);
+	s->tteat = ft_atoi(argv[3]);
+	s->ttsleep = ft_atoi(argv[4]);
+	if (argv[5])
+		s->total_eat = ft_atoi(argv[5]);
+	else
+		s->total_eat = 0;
 	return (0);
 }
 
@@ -194,18 +199,18 @@ int	main(int argc, char **argv)
 	uint64_t	time;
 
 	i = 0;
-	s = malloc(sizeof(t_struct));
-	s->philo_nb = ft_atoi(argv[1]);
-	s->ttdie = ft_atoi(argv[2]);
-	s->tteat = ft_atoi(argv[3]);
-	s->ttsleep = ft_atoi(argv[4]);
-	if (argv[5])
-		s->total_eat = ft_atoi(argv[5]);
-	s->forks_status = malloc(sizeof(int) * (s->philo_nb));
-	s->forks = malloc(sizeof(pthread_mutex_t) * (s->philo_nb));
-	s->speak = malloc(sizeof(pthread_mutex_t));
+	s = wrmalloc(sizeof(t_struct));
+	if (set_shared_var(argc, argv, s) == 1)
+	{
+		wrdestroy();
+		return (1);
+	}
+	s->forks_status = wrmalloc(sizeof(int) * (s->philo_nb));
+	s->eat_count = wrmalloc(sizeof(int) * (s->philo_nb));
+	s->forks = wrmalloc(sizeof(pthread_mutex_t) * (s->philo_nb));
+	s->speak = wrmalloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(s->speak, NULL);
-	philos = malloc(sizeof(t_philo) * (s->philo_nb));
+	philos = wrmalloc(sizeof(t_philo) * (s->philo_nb));
 	while (i < s->philo_nb)
 	{
 		philos[i].s = s;
@@ -223,7 +228,7 @@ int	main(int argc, char **argv)
 	{
 		philos[i].last_action_time = get_time();
 		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
-		usleep(10);
+		usleep(50);
 		i++;
 	}
 	i = 0;
