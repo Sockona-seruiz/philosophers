@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/20 15:45:07 by seruiz            #+#    #+#             */
-/*   Updated: 2021/01/26 15:24:06 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/07 17:21:13 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 
 #include "philo_0.h"
 
-void			ft_lstadd_back(t_list **alst, t_list *new)
+void	ft_lstadd_back(t_list **alst, t_list *new)
 {
-	t_list *buffer;
+	t_list	*buffer;
 
 	if (!alst)
 		return ;
@@ -42,22 +42,24 @@ void			ft_lstadd_back(t_list **alst, t_list *new)
 
 static t_list	**wrgetter(void)
 {
-	static t_list *wrm;
+	static t_list	*wrm;
 
 	return (&wrm);
 }
 
-void			*wrmalloc(unsigned long size)
+void	*wrmalloc(unsigned long size)
 {
 	char	*buffer;
 	t_list	*new_elem;
 
-	if (!(buffer = malloc(size)))
+	buffer = malloc(size);
+	if (buffer == 0)
 	{
 		wrdestroy();
 		return (0);
 	}
-	if (!(new_elem = malloc(sizeof(t_list))))
+	new_elem = malloc(sizeof(t_list));
+	if (new_elem == 0)
 	{
 		free(buffer);
 		wrdestroy();
@@ -69,7 +71,7 @@ void			*wrmalloc(unsigned long size)
 	return (buffer);
 }
 
-int				wrfree(void *ptr)
+int	wrfree(void *ptr)
 {
 	t_list	*prev;
 	t_list	*current;
@@ -98,7 +100,7 @@ int				wrfree(void *ptr)
 	return (EXIT_FAILURE);
 }
 
-void			wrdestroy(void)
+void	wrdestroy(void)
 {
 	t_list	*current;
 	t_list	*next;

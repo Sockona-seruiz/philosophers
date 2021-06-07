@@ -10,7 +10,11 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS			=	philo_0.c\
+SRCS			=	main.c\
+					eat.c\
+					speak.c\
+					routine.c\
+					init.c\
 					utils.c\
 					ft_wrmalloc.c
 OBJS			= $(SRCS:.c=.o)

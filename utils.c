@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/06/07 17:13:19 by seruiz            #+#    #+#             */
+/*   Updated: 2021/06/07 17:18:25 by seruiz           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_0.h"
 
 int	ft_atoi(const char *str)
@@ -46,6 +58,13 @@ void	custom_usleep(int delay)
 		j = get_time();
 		j = j - i;
 	}
+}
+
+int	ft_error(char *message)
+{
+	wrdestroy();
+	printf("Error : %s\n", message);
+	return (1);
 }
 
 void	ft_exit(t_philo *philo)
