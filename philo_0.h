@@ -12,6 +12,7 @@
 # define DEAD 4
 # define FREE 5
 # define LOCK 6
+# define DONE 7
 
 # define EXIT_SUCCESS 0
 # define EXIT_FAILURE 1
@@ -32,7 +33,9 @@ typedef struct	s_struct
     int             *eat_count;
 	uint64_t		start_time;
 	uint64_t		actual_time;
+	uint64_t		*last_meal_t;
 	pthread_mutex_t	*speak;
+	pthread_mutex_t	*write;
 	pthread_mutex_t	*forks;
 	int				*forks_status;
 }				t_struct;
@@ -40,7 +43,6 @@ typedef struct	s_struct
 typedef struct	s_philo
 {
 	int				state;
-	int				eat_count;
 	int				id;
 	uint64_t		last_action_time;
 	uint64_t		begin_think_time;
