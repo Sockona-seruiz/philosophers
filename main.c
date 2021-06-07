@@ -6,11 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:10 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:13:56 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/07 17:32:34 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_0.h"
+#include "philo_one.h"
 
 int	main(int argc, char **argv)
 {

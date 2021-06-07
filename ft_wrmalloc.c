@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/20 15:45:07 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:21:13 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/07 17:32:31 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 **	-wrdestroy : free all malloc created by malloc
 */
 
-#include "philo_0.h"
+#include "philo_one.h"
 
 void	ft_lstadd_back(t_list **alst, t_list *new)
 {

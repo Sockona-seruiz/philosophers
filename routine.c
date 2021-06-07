@@ -6,11 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:15 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:14:31 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/07 17:32:51 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_0.h"
+#include "philo_one.h"
 
 uint64_t	set_get_last_meal_time(t_struct *s, int	sw, int id)
 {
