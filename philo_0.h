@@ -54,3 +54,15 @@ typedef struct	s_philo
 void			*wrmalloc(unsigned long size);
 int				wrfree(void *ptr);
 void			wrdestroy(void);
+void			ft_exit(t_philo *philo);
+void			custom_usleep(int delay);
+uint64_t		get_time(void);
+int				ft_atoi(const char *str);
+int				monitoring_loop(t_struct *s);
+int				ft_error(char *message);
+void			*routine_loop(void	*arg);
+int				pick_fork(t_philo *philo, int i);
+uint64_t		set_get_last_meal_time(t_struct *s, int	sw, int id);
+int				speak(t_struct *s, int state, int id);
+int				set_shared_var(int argc, char **argv, t_struct *s);
+void			init_struct(t_struct *s, t_philo *philos);

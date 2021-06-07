@@ -1,68 +1,5 @@
 #include "philo_0.h"
 
-int	ft_atoi(const char *str)
-{
-	int	i;
-	int	result;
-	int	sign;
-
-	sign = 1;
-	result = 0;
-	i = 0;
-	while ((9 <= str[i] && str[i] <= 13) || str[i] == 32)
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (48 <= str[i] && str[i] <= 57)
-	{
-		result = (str[i] - 48) + (result * 10);
-		i++;
-	}
-	return (result * sign);
-}
-
-uint64_t	get_time(void)
-{
-	static struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * (uint64_t)1000) + (tv.tv_usec / 1000));
-}
-
-void	custom_usleep(t_philo *philo, int delay)
-{
-	uint64_t	i;
-	uint64_t	j;
-	int			true_delay;
-
-	i = get_time();
-	j = 0;
-	while (j < delay)
-	{
-		usleep(10);
-		j = get_time();
-		j = j - i;
-	}
-}
-
-void	ft_exit(t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < philo->s->philo_nb)
-	{
-		pthread_mutex_destroy(&(philo->s->forks[i]));
-		i++;
-	}
-	wrdestroy();
-	exit (0);
-}
-
 int	speak(t_struct *s, int state, int id)
 {
 	pthread_mutex_lock(s->speak);
@@ -120,8 +57,7 @@ int	pick_fork(t_philo *philo, int i)
 	speak(philo->s, FORK, philo->id);
 	speak(philo->s, EAT, philo->id);
 	set_get_last_meal_time(philo->s, 1, i);
-	//philo->s->last_meal_t[i] = get_time();
-	custom_usleep(philo, philo->s->tteat);
+	custom_usleep(philo->s->tteat);
 	philo->s->eat_count[i]++;
 	philo->state = SLEEP;
 	pthread_mutex_unlock(&(philo->s->forks[second_fork]));
@@ -129,13 +65,12 @@ int	pick_fork(t_philo *philo, int i)
 	return (0);
 }
 
-void	*test_loop(void	*arg)
+void	*routine_loop(void	*arg)
 {
 	t_philo		*philo;
-	int			ret;
 
 	philo = arg;
-	//philo->begin_think_time = get_time();
+	philo->s->last_meal_t[philo->id] = get_time();
 	while (philo->state != DEAD)
 	{
 		if (philo->state == THINK)
@@ -143,7 +78,7 @@ void	*test_loop(void	*arg)
 		if (philo->state == SLEEP)
 		{
 			speak(philo->s, SLEEP, philo->id);
-			custom_usleep(philo, philo->s->ttsleep);
+			custom_usleep(philo->s->ttsleep);
 			philo->state = THINK;
 		}
 	}
@@ -152,8 +87,38 @@ void	*test_loop(void	*arg)
 
 int	ft_error(char *message)
 {
+	wrdestroy();
 	printf("Error : %s\n", message);
 	return (1);
+}
+
+int	monitoring_loop(t_struct *s)
+{
+	int			i;
+	int			done_eating;
+	uint64_t	time;
+
+	i = 0;
+	done_eating = 1;
+	while (42)
+	{
+		while (i < s->philo_nb)
+		{
+			s->actual_time = get_time();
+			time = set_get_last_meal_time(s, -1, i);
+			if (s->actual_time - time > (uint64_t)s->ttdie)
+				return (speak(s, DEAD, i + 1));
+			pthread_mutex_unlock(s->write);
+			if (s->eat_count[i] < s->total_eat)
+				done_eating = 0;
+			i++;
+		}
+		if (done_eating == 1 && s->total_eat != 0)
+			return (speak(s, DONE, i + 1));
+		done_eating = 1;
+		i = 0;
+		usleep(50);
+	}
 }
 
 int	set_shared_var(int argc, char **argv, t_struct *s)
@@ -168,73 +133,25 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 		s->total_eat = ft_atoi(argv[5]);
 	else
 		s->total_eat = 0;
-	return (0);
-}
-
-int	monitoring_loop(t_struct *s)
-{
-	int			i;
-	int			done_eating;
-	uint64_t	time;
-
-	i = 0;
-	done_eating = 1;
-	/*
-	time = get_time();
-	printf("Monitoring launched\n");
-	printf("start time = %llu\n      time = %llu", s->start_time, time);
-	*/
-	while (42)
-	{
-		while (i < s->philo_nb)
-		{
-			s->actual_time = get_time();
-			time = set_get_last_meal_time(s, -1, i);
-			if (s->actual_time - time > s->ttdie)
-			{
-				if (speak(s, DEAD, i + 1) == 1)
-					return (1);
-			}
-			pthread_mutex_unlock(s->write);
-			//printf("eat_count[%d] = %d\n", i, s->eat_count[i]);
-			if (s->eat_count[i] < s->total_eat)
-				done_eating = 0;
-			i++;
-		}
-		if (done_eating == 1 && s->total_eat != 0)
-			return (speak(s, DONE, i + 1));
-		done_eating = 1;
-		i = 0;
-		usleep(50);
-	}
-}
-
-int	main(int argc, char **argv)
-{
-	t_struct	*s;
-	t_philo		*philos;
-	int			i;
-	uint64_t	time;
-	pthread_t	monitor_id;
-	int			ret;
-
-	i = 0;
-	ret = 0;
-	s = wrmalloc(sizeof(t_struct));
-	if (set_shared_var(argc, argv, s) == 1)
-	{
-		wrdestroy();
-		return (1);
-	}
 	s->forks_status = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->eat_count = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->last_meal_t = wrmalloc(sizeof(uint64_t) * (s->philo_nb));
 	s->forks = wrmalloc(sizeof(pthread_mutex_t) * (s->philo_nb));
 	s->speak = wrmalloc(sizeof(pthread_mutex_t));
 	s->write = wrmalloc(sizeof(pthread_mutex_t));
+	if (s->forks_status == NULL || s->eat_count == NULL || s->last_meal_t == NULL
+	|| s->forks == NULL || s->speak == NULL || s->write == NULL)
+		return (ft_error("Malloc faillure\n"));
+	return (0);
+}
+
+void	init_struct(t_struct *s, t_philo *philos)
+{
+	int	i;
+
+	i = 0;
 	pthread_mutex_init(s->speak, NULL);
 	pthread_mutex_init(s->write, NULL);
-	philos = wrmalloc(sizeof(t_philo) * (s->philo_nb));
 	while (i < s->philo_nb)
 	{
 		philos[i].s = s;
@@ -245,32 +162,31 @@ int	main(int argc, char **argv)
 		pthread_mutex_init(&(s->forks[i]), NULL);
 		i++;
 	}
+}
 
+int	main(int argc, char **argv)
+{
+	t_struct	*s;
+	t_philo		*philos;
+	int			i;
+	int			ret;
+
+	i = 0;
+	ret = 0;
+	s = wrmalloc(sizeof(t_struct));
+	if (set_shared_var(argc, argv, s) == 1)
+		return (1);
+	philos = wrmalloc(sizeof(t_philo) * (s->philo_nb));
+	init_struct(s, philos);
 	i = 0;
 	s->start_time =  get_time();
 	while (i < s->philo_nb)
 	{
-		s->last_meal_t[i] = s->start_time;
-		i++;
-	}
-	
-	//usleep(50);
-	i = 0;
-	while (i < s->philo_nb)
-	{
-		pthread_create(&(philos[i].th_id), NULL, test_loop, &philos[i]);
+		pthread_create(&(philos[i].th_id), NULL, routine_loop, &philos[i]);
 		usleep(50);
 		i++;
 	}
 	ret = monitoring_loop(s);
 	if (ret != 0)
 		return (ret);
-	/*
-	i = 0;
-	while (i < s->philo_nb)
-	{
-		pthread_join(philos[i].th_id, 0);
-		i++;
-	}
-	*/
 }
