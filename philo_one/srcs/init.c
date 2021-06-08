@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 17:22:34 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 17:25:34 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 	if (s->eat_count == NULL
 		|| s->last_meal_t == NULL || s->forks == NULL
 		|| s->speak == NULL || s->write == NULL)
-		return (ft_error("Malloc faillure\n", s));
+		return (ft_error("Malloc faillure", s));
 	return (0);
 }
 
