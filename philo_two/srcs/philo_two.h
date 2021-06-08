@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:27:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 16:03:56 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 17:16:00 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void			custom_usleep(int delay);
 uint64_t		get_time(void);
 int				ft_atoi(const char *str);
 int				monitoring_loop(t_struct *s);
-int				ft_error(char *message);
+int				ft_error(char *message, t_struct *s);
 void			*routine_loop(void	*arg);
 int				pick_fork(t_philo *philo, int i);
 uint64_t		set_get_last_meal_time(t_struct *s, int	sw, int id);
