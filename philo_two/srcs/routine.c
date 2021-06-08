@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:15 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 14:09:23 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 15:38:37 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ int	monitoring_loop(t_struct *s)
 			i++;
 		}
 		if (done_eating == 1 && s->total_eat != 0)
+		{
+			sem_post(s->sem_speak);
 			return (speak(s, DONE, i + 1));
+		}
 		done_eating = 1;
 		i = 0;
 		usleep(50);
