@@ -6,11 +6,26 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:32:33 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 11:25:19 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+
+int	check_args(t_struct *s)
+{
+	if (s->philo_nb <= 0)
+		return (ft_error("Invalid number of philosophers"));
+	if (s->ttdie <= 0)
+		return (ft_error("Invalid time to die"));
+	if (s->tteat <= 0)
+		return (ft_error("Invalid time to eat"));
+	if (s->ttsleep <= 0)
+		return (ft_error("Invalid time to sleep"));
+	if (s->total_eat < 0)
+		return (ft_error("Invalid number of time each philosophers must eat"));
+	return (0);
+}
 
 int	set_shared_var(int argc, char **argv, t_struct *s)
 {
@@ -24,6 +39,8 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 		s->total_eat = ft_atoi(argv[5]);
 	else
 		s->total_eat = 0;
+	if (check_args(s) == 1)
+		return (1);
 	s->forks_status = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->eat_count = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->last_meal_t = wrmalloc(sizeof(uint64_t) * (s->philo_nb));
