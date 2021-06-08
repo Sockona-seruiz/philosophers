@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:13 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:32:52 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 11:35:14 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	speak(t_struct *s, int state, int id)
 	if (state == DONE)
 	{
 		printf("Max eat count reached\n");
-		return (2);
+		return (0);
 	}
 	printf("%llu %d ", get_time() - s->start_time, id);
 	if (state == FORK)

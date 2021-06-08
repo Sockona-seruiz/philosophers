@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:10 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 11:15:01 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 11:33:22 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,5 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	ret = monitoring_loop(s);
-	return (ft_exit(s, ret));
+	return (ft_exit(s, ret, philos));
 }
