@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:27:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 11:00:05 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 11:31:04 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,12 @@ typedef struct s_struct
 	pthread_mutex_t	*speak;
 	pthread_mutex_t	*write;
 	pthread_mutex_t	*forks;
-	int				*forks_status;
 }				t_struct;
 
 typedef struct s_philo
 {
 	int				state;
 	int				id;
-	uint64_t		last_action_time;
-	uint64_t		begin_think_time;
-	uint64_t		end_think_time;
 	pthread_t		th_id;
 	t_struct		*s;
 }				t_philo;

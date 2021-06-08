@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 11:25:19 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 11:30:40 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,12 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 		s->total_eat = 0;
 	if (check_args(s) == 1)
 		return (1);
-	s->forks_status = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->eat_count = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->last_meal_t = wrmalloc(sizeof(uint64_t) * (s->philo_nb));
 	s->forks = wrmalloc(sizeof(pthread_mutex_t) * (s->philo_nb));
 	s->speak = wrmalloc(sizeof(pthread_mutex_t));
 	s->write = wrmalloc(sizeof(pthread_mutex_t));
-	if (s->forks_status == NULL || s->eat_count == NULL
+	if (s->eat_count == NULL
 		|| s->last_meal_t == NULL || s->forks == NULL
 		|| s->speak == NULL || s->write == NULL)
 		return (ft_error("Malloc faillure\n"));
@@ -67,7 +66,6 @@ void	init_struct(t_struct *s, t_philo *philos)
 		philos[i].id = i + 1;
 		philos[i].state = THINK;
 		s->eat_count[i] = 0;
-		s->forks_status[i] = FREE;
 		pthread_mutex_init(&(s->forks[i]), NULL);
 		i++;
 	}
