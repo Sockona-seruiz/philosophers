@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:27:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:33:05 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 11:00:05 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct s_philo
 void			*wrmalloc(unsigned long size);
 int				wrfree(void *ptr);
 void			wrdestroy(void);
-void			ft_exit(t_philo *philo);
+int				ft_exit(t_struct *s, int ret);
 void			custom_usleep(int delay);
 uint64_t		get_time(void);
 int				ft_atoi(const char *str);

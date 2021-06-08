@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ncolomer <ncolomer@student.42.fr>          +#+  +:+       +#+         #
+#    By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/09 19:06:43 by ncolomer          #+#    #+#              #
-#    Updated: 2019/12/12 23:24:03 by ncolomer         ###   ########.fr        #
+#    Updated: 2021/06/08 10:53:27 by seruiz           ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ SRCS			=	main.c\
 					routine.c\
 					init.c\
 					utils.c\
+					exit.c\
 					ft_wrmalloc.c
 OBJS			= $(SRCS:.c=.o)
 

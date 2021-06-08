@@ -1,40 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/07 17:13:10 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 10:59:33 by seruiz           ###   ########lyon.fr   */
+/*   Created: 2021/06/08 10:53:01 by seruiz            #+#    #+#             */
+/*   Updated: 2021/06/08 11:02:25 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-int	main(int argc, char **argv)
+int	ft_error(char *message)
 {
-	t_struct	*s;
-	t_philo		*philos;
-	int			i;
-	int			ret;
+	wrdestroy();
+	printf("Error : %s\n", message);
+	return (1);
+}
+
+int	ft_exit(t_struct *s, int ret)
+{
+	int	i;
 
 	i = 0;
-	ret = 0;
-	s = wrmalloc(sizeof(t_struct));
-	if (set_shared_var(argc, argv, s) == 1)
-		return (1);
-	philos = wrmalloc(sizeof(t_philo) * (s->philo_nb));
-	init_struct(s, philos);
-	i = 0;
-	s->start_time = get_time();
 	while (i < s->philo_nb)
 	{
-		pthread_create(&(philos[i].th_id), NULL, routine_loop, &philos[i]);
-		usleep(50);
+		pthread_mutex_destroy(&(s->forks[i]));
 		i++;
 	}
-	ret = monitoring_loop(s);
-	if (ret != 0)
-		return (ft_exit(s, ret));
+	pthread_mutex_destroy(s->write);
+	pthread_mutex_destroy(s->speak);
+	wrdestroy();
+	if (ret == 2)
+		return (0);
+	return (ret);
 }

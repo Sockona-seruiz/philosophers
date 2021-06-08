@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:19 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/07 17:32:53 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 10:53:33 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,25 +58,4 @@ void	custom_usleep(int delay)
 		j = get_time();
 		j = j - i;
 	}
-}
-
-int	ft_error(char *message)
-{
-	wrdestroy();
-	printf("Error : %s\n", message);
-	return (1);
-}
-
-void	ft_exit(t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < philo->s->philo_nb)
-	{
-		pthread_mutex_destroy(&(philo->s->forks[i]));
-		i++;
-	}
-	wrdestroy();
-	exit (0);
 }
