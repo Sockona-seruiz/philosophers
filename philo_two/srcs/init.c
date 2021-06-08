@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 14:14:58 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 16:07:14 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 		s->total_eat = 0;
 	if (check_args(s) == 1)
 		return (1);
+	s->done = 0;
 	s->eat_count = wrmalloc(sizeof(int) * (s->philo_nb));
 	s->last_meal_t = wrmalloc(sizeof(uint64_t) * (s->philo_nb));
 	if (s->eat_count == NULL || s->last_meal_t == NULL)

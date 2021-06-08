@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_one.h                                        :+:      :+:    :+:   */
+/*   philo_two.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:27:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 14:08:49 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/08 16:03:56 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_ONE_H
-# define PHILO_ONE_H
+#ifndef PHILO_TWO_H
+# define PHILO_TWO_H
 
 # include <pthread.h>
 # include <stdio.h>
@@ -50,6 +50,7 @@ typedef struct s_struct
 	int				ttsleep;
 	int				total_eat;
 	int				philo_nb;
+	int				done;
 	int				*eat_count;
 	uint64_t		start_time;
 	uint64_t		actual_time;
