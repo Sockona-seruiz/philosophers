@@ -6,18 +6,18 @@
 #    By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/09 19:06:43 by ncolomer          #+#    #+#              #
-#    Updated: 2021/06/08 10:53:27 by seruiz           ###   ########lyon.fr    #
+#    Updated: 2021/06/08 11:04:23 by seruiz           ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS			=	main.c\
-					eat.c\
-					speak.c\
-					routine.c\
-					init.c\
-					utils.c\
-					exit.c\
-					ft_wrmalloc.c
+SRCS			=	./srcs/main.c\
+					./srcs/eat.c\
+					./srcs/speak.c\
+					./srcs/routine.c\
+					./srcs/init.c\
+					./srcs/utils.c\
+					./srcs/exit.c\
+					./srcs/ft_wrmalloc.c
 OBJS			= $(SRCS:.c=.o)
 
 CC				= gcc
