@@ -6,7 +6,7 @@
 #    By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/09 19:06:43 by ncolomer          #+#    #+#              #
-#    Updated: 2021/06/08 14:08:40 by seruiz           ###   ########lyon.fr    #
+#    Updated: 2021/06/09 14:47:06 by seruiz           ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,7 @@ SRCS			=	./srcs/main.c\
 					./srcs/routine.c\
 					./srcs/init.c\
 					./srcs/utils.c\
-					./srcs/exit.c\
-					./srcs/ft_wrmalloc.c
+					./srcs/exit.c
 OBJS			= $(SRCS:.c=.o)
 
 CC				= gcc

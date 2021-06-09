@@ -6,13 +6,13 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 17:18:34 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/09 14:49:20 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_two.h"
 
-int	check_args(t_struct *s)
+int	check_args(t_struct *s, char **argv)
 {
 	if (s->philo_nb <= 0)
 		return (ft_error("Invalid number of philosophers", s));
@@ -22,10 +22,13 @@ int	check_args(t_struct *s)
 		return (ft_error("Invalid time to eat", s));
 	if (s->ttsleep <= 0)
 		return (ft_error("Invalid time to sleep", s));
-	if (s->total_eat < 0)
-		return (ft_error(
-				"Invalid number of time each philosophers must eat",
-				s));
+	if (argv[5])
+	{
+		if (s->total_eat <= 0)
+			return (ft_error(
+					"Invalid number of time each philosophers must eat",
+					s));
+	}
 	return (0);
 }
 
@@ -33,6 +36,8 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 {
 	s->eat_count = NULL;
 	s->last_meal_t = NULL;
+	if (s == NULL)
+		return (ft_error("Malloc faillure", s));
 	if (argc != 5 && argc != 6)
 		return (ft_error("Invalid number of arguments", s));
 	s->philo_nb = ft_atoi(argv[1]);
@@ -43,9 +48,8 @@ int	set_shared_var(int argc, char **argv, t_struct *s)
 		s->total_eat = ft_atoi(argv[5]);
 	else
 		s->total_eat = 0;
-	if (check_args(s) == 1)
+	if (check_args(s, argv) == 1)
 		return (1);
-	s->done = 0;
 	s->eat_count = malloc(sizeof(int) * (s->philo_nb));
 	s->last_meal_t = malloc(sizeof(uint64_t) * (s->philo_nb));
 	if (s->eat_count == NULL || s->last_meal_t == NULL)
@@ -74,6 +78,9 @@ int	init_struct(t_struct *s, t_philo *philos)
 	s->sem_write = sem_open(SEM_WRITE_NAME, O_CREAT, 0660, 1);
 	if (s->sem_forks == SEM_FAILED || s->sem_speak == SEM_FAILED
 		|| s->sem_write == SEM_FAILED)
+	{
+		free(philos);
 		return (ft_error("Semaphore faillure", s));
+	}
 	return (0);
 }
