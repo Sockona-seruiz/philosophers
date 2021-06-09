@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:10 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 11:33:22 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/09 14:12:16 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,12 @@ int	main(int argc, char **argv)
 
 	i = 0;
 	ret = 0;
-	s = wrmalloc(sizeof(t_struct));
+	s = NULL;
+	philos = NULL;
+	s = malloc(sizeof(t_struct));
 	if (set_shared_var(argc, argv, s) == 1)
 		return (1);
-	philos = wrmalloc(sizeof(t_philo) * (s->philo_nb));
+	philos = malloc(sizeof(t_philo) * (s->philo_nb));
 	init_struct(s, philos);
 	i = 0;
 	s->start_time = get_time();
