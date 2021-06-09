@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/09 14:12:07 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/09 14:29:57 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	check_args(t_struct *s)
 		return (ft_error("Invalid time to eat", s));
 	if (s->ttsleep <= 0)
 		return (ft_error("Invalid time to sleep", s));
-	if (s->total_eat < 0)
+	if (s->total_eat <= 0)
 		return (ft_error(
 				"Invalid number of time each philosophers must eat",
 				s));

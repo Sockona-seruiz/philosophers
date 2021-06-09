@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 10:53:01 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/09 14:12:36 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/09 14:25:08 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int	ft_exit(t_struct *s, int ret, t_philo *philos)
 		pthread_detach(philos[i].th_id);
 		i++;
 	}
+	ft_free(s, philos);
 	pthread_mutex_destroy(s->write);
 	pthread_mutex_destroy(s->speak);
-	ft_free(s, philos);
 	return (ret);
 }
