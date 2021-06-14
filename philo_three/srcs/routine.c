@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:15 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/11 14:40:36 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 12:08:48 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,16 @@ uint64_t	set_get_last_meal_time(t_struct *s, int	sw)
 void	*routine_loop(void	*arg)
 {
 	t_philo		*philo;
+	t_struct	s_cpy;
 	pthread_t	th_id;
 
 	philo = arg;
 	philo->s->philo_id = philo->id;
 	philo->s->last_meal_t = get_time();
-	pthread_create(&(th_id), NULL, monitoring_loop, &(philo->s));
+	s_cpy = *philo->s;
+	free (philo->s);
+	philo->s = &s_cpy;
+	pthread_create(&(th_id), NULL, monitoring_loop, &(s_cpy));
 	while (philo->state != DEAD)
 	{
 		if (philo->state == THINK)
