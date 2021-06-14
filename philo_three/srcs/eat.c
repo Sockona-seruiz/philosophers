@@ -6,11 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:14 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/11 14:33:47 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 12:54:18 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_bonus.h"
 
 int	pick_fork(t_philo *philo)
 {

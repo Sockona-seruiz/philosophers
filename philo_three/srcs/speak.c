@@ -6,11 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:13 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/11 14:06:17 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 12:59:02 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_bonus.h"
 
 int	speak_done(t_struct *s, int state)
 {

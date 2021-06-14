@@ -6,11 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:19 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 14:09:21 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 12:59:11 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_bonus.h"
 
 int	ft_atoi(const char *str)
 {

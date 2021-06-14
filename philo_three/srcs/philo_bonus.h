@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_two.h                                        :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:27:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/14 11:46:12 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 12:58:29 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_TWO_H
-# define PHILO_TWO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <pthread.h>
 # include <stdio.h>
@@ -20,6 +20,8 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <semaphore.h>
+# include <signal.h>
+# include <sys/types.h>
 
 # define FORK 0
 # define EAT 1

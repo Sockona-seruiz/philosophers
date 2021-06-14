@@ -6,11 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:15 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/14 12:08:48 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 13:03:05 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_bonus.h"
 
 uint64_t	set_get_last_meal_time(t_struct *s, int	sw)
 {
@@ -36,6 +36,7 @@ void	*routine_loop(void	*arg)
 	pthread_t	th_id;
 
 	philo = arg;
+	philo->s->start_time = get_time();
 	philo->s->philo_id = philo->id;
 	philo->s->last_meal_t = get_time();
 	s_cpy = *philo->s;
@@ -59,13 +60,11 @@ void	*routine_loop(void	*arg)
 void	*monitoring_loop(void *arg)
 {
 	int			i;
-	int			done_eating;
 	uint64_t	time;
 	t_struct	*s;
 
 	s = arg;
 	i = s->philo_id;
-	done_eating = 1;
 	while (42)
 	{
 		time = set_get_last_meal_time(s, -1);
@@ -75,13 +74,10 @@ void	*monitoring_loop(void *arg)
 			speak(s, DEAD, i + 1);
 			exit (1);
 		}
-		if (s->eat_count < s->total_eat)
-			done_eating = 0;
-		if (done_eating == 1 && s->total_eat != 0)
+		if (s->eat_count >= s->total_eat && s->total_eat != 0)
 		{
 			speak(s, DONE, i + 1);
 			exit (0);
 		}
-		done_eating = 1;
 	}
 }

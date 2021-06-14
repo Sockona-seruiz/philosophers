@@ -6,19 +6,34 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:10 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/11 14:37:30 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/14 13:03:52 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_bonus.h"
 
-//Philo with forks and semaphores
+void	wait_to_kill(t_struct *s, t_philo *philos)
+{
+	int	exit_status;
+	int	i;
+
+	while (1)
+	{
+		waitpid(-1, &exit_status, 0);
+		if (WEXITSTATUS(exit_status) == 1 || WEXITSTATUS(exit_status) == 0)
+		{
+			i = 0;
+			while (i < s->philo_nb)
+				kill(philos[i++].pid, SIGKILL);
+			break ;
+		}
+	}
+}
 
 int	main(int argc, char **argv)
 {
 	t_struct	*s;
 	t_philo		*philos;
-	int			exit_status;
 	int			i;
 	int			ret;
 
@@ -32,27 +47,14 @@ int	main(int argc, char **argv)
 	philos = malloc(sizeof(t_philo) * (s->philo_nb));
 	if (init_struct(s, philos) == 1)
 		return (1);
-	i = 0;
 	while (i < s->philo_nb)
 	{
-		s->start_time = get_time();
 		philos[i].pid = fork();
 		if (philos[i].pid == 0)
-		{
-			routine_loop(&philos[i]);//lancer la routine du philo qui lancera la routine de son monitoring
-			exit (1);
-		}
-		//pthread_create(&(philos[i].th_id), NULL, routine_loop, &philos[i]);
+			routine_loop(&philos[i]);
 		usleep(50);
 		i++;
 	}
-	while (1)
-	{
-		waitpid(-1, &exit_status, 0);
-		if (WEXITSTATUS(exit_status) == 1)
-			break;
-	}
-	printf("DEAD===============");
-	//ret = monitoring_loop(s);
+	wait_to_kill(s, philos);
 	return (ft_exit(s, ret, philos));
 }
