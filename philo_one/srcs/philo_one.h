@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:27:16 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/09 13:59:43 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/11 15:27:53 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_philo
 	t_struct		*s;
 }				t_philo;
 
+void			ft_putstr(char *str);
 void			*wrmalloc(unsigned long size);
 int				wrfree(void *ptr);
 void			wrdestroy(void);

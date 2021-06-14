@@ -6,11 +6,31 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/07 17:13:19 by seruiz            #+#    #+#             */
-/*   Updated: 2021/06/08 10:53:33 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/06/11 15:28:26 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+
+int	ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+void	ft_putstr(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	write (1, str, i);
+}
 
 int	ft_atoi(const char *str)
 {
